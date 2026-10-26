@@ -1,40 +1,22 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Bus Tickets</title>
-  <style>
-    body { font-family: Arial; background: #f6f7f9; }
-    .card { max-width: 520px; margin: 80px auto; padding: 24px; background: white; border-radius: 8px; }
-    select, input, button { width: 100%; padding: 10px; margin-top: 12px; }
-    button { background: #2563eb; color: white; border: none; cursor: pointer; }
-  </style>
-</head>
-<body>
-
-<div class="card">
-  <h2>Search Bus Tickets</h2>
-
-  <form method="get" action="/search">
-    <label>From</label>
-    <select name="fromCity">
-      {{ range .Cities }}
-        <option value="{{ .ID }}">{{ .Name }}</option>
-      {{ end }}
-    </select>
-
-    <label>To</label>
-    <select name="toCity">
-      {{ range .Cities }}
-        <option value="{{ .ID }}">{{ .Name }}</option>
-      {{ end }}
-    </select>
-
-    <label>Date</label>
-    <input type="date" name="date" required />
-
-    <button type="submit">Search</button>
-  </form>
+{{define "hero"}}
+<div class="hero">
+  <h1>Every bus across Europe, in one search.</h1>
+  <p>Pick any two cities and a date. Busscanner lists every departure and sends you to the operator to book.</p>
 </div>
-
-</body>
-</html>
+{{end}}
+{{define "content"}}
+<form class="search" id="search" method="get" action="/search">
+  <div class="field"><label for="from">From</label><input id="from" name="from" list="cities" value="{{.From}}" placeholder="City" autocomplete="off" required></div>
+  <button type="button" class="swap" id="swap" aria-label="Swap cities">⇄</button>
+  <div class="field"><label for="to">To</label><input id="to" name="to" list="cities" value="{{.To}}" placeholder="City" autocomplete="off" required></div>
+  <div class="field"><label for="date">Date</label><input id="date" name="date" type="date" value="{{.Date}}" min="{{.MinDate}}" max="{{.MaxDate}}" required></div>
+  <button class="btn" type="submit">Search trips</button>
+  <datalist id="cities"></datalist>
+</form>
+<p class="hint">Timetable covers {{.MinDate}} to {{.MaxDate}}.</p>
+<div class="popular"><h2>Popular routes</h2>
+  <div class="routes">
+    {{range .Popular}}<a class="route-card" href="/search?from={{.From}}&to={{.To}}&date={{$.Date}}"><b>{{.From}} → {{.To}}</b><em>View trips</em></a>{{end}}
+  </div>
+</div>
+{{end}}

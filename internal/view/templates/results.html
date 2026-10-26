@@ -1,0 +1,36 @@
+{{define "content"}}
+<div class="res-head">
+  <h2>{{.From}} → {{.To}}</h2>
+  <p class="num">{{.DateLabel}} · {{len .Offers}} trip{{if ne (len .Offers) 1}}s{{end}}</p>
+</div>
+<form class="search" action="/search" method="get" style="margin-top:12px">
+  <div class="field"><label for="from">From</label><input id="from" name="from" list="cities" value="{{.From}}" autocomplete="off" required></div>
+  <button type="button" class="swap" id="swap" aria-label="Swap cities">⇄</button>
+  <div class="field"><label for="to">To</label><input id="to" name="to" list="cities" value="{{.To}}" autocomplete="off" required></div>
+  <div class="field"><label for="date">Date</label><input id="date" name="date" type="date" value="{{.Date}}" min="{{.MinDate}}" max="{{.MaxDate}}" required></div>
+  <button class="btn" type="submit">Update</button>
+  <datalist id="cities"></datalist>
+</form>
+{{if .Error}}<div class="notice-err" role="alert">{{.Error}}</div>{{end}}
+<div class="chips" role="group" aria-label="Sort and filter">
+  {{range .Sorts}}<a class="chip" aria-pressed="{{.On}}" href="{{.URL}}">{{.Label}}</a>{{end}}
+  <span class="sep"></span>
+  {{range .Times}}<a class="chip" aria-pressed="{{.On}}" href="{{.URL}}">{{.Label}}</a>{{end}}
+</div>
+{{if not .HasPrices}}<div class="note">Operators set their own prices, so check the price on their site. Prices appear here once a price source is connected.</div>{{end}}
+{{range .Offers}}
+<article class="trip">
+  <div>
+    <div class="legs"><div class="t num">{{.Dep}}</div><div class="line"><span>{{.Duration}}</span></div><div class="t num">{{.Arr}}{{if .NextDay}}<sup class="hint">+1</sup>{{end}}</div></div>
+    <div class="stations"><span>{{.FromStop}}</span><span>{{.ToStop}}</span></div>
+    <div class="meta"><span class="tag">{{.Provider}}</span><span>{{.Route}}</span></div>
+  </div>
+  <div class="buy">
+    {{if .Price}}<div class="price num">{{.Price}}</div>{{end}}
+    <a class="btn" href="{{.BookURL}}" target="_blank" rel="noopener sponsored">Check price on {{.Provider}}</a>
+  </div>
+</article>
+{{else}}
+<div class="empty"><b>No trips found for this day.</b><br>Try another date or a nearby city.</div>
+{{end}}
+{{end}}

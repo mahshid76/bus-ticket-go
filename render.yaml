@@ -1,0 +1,8 @@
+# Render Blueprint: free web service, no credit card needed.
+services:
+  - type: web
+    name: busscanner
+    runtime: docker
+    plan: free
+    healthCheckPath: /healthz
+    autoDeploy: true
